@@ -9,12 +9,14 @@ global buscar_palabra
 global palabras_con_prefijo
 global trie_pesar
 
+extern malloc
+extern free
 
 ; SE RECOMIENDA COMPLETAR LOS DEFINES CON LOS VALORES CORRECTOS
-%define offset_sig 8
-%define offset_hijos 16
-%define offset_c 17
-%define offset_fin 18
+%define offset_sig 0
+%define offset_hijos 8
+%define offset_c 16
+%define offset_fin 17
 
 %define size_nodo 18
 
@@ -41,24 +43,42 @@ section .text
 ; FUNCIONES OBLIGATORIAS. PUEDEN CREAR LAS FUNCIONES AUXILIARES QUE CREAN CONVENIENTES
 
 trie_crear:
-	; COMPLETAR AQUI EL CODIGO
-
+	; trie *trie_crear(void)
+	PUSH RBP
+	MOV RBP RSP
+	MOV RDI size_trie 
+	CALL malloc	
+	
+	mov [rax + offset_raiz] NULL
+	
+	POP RBP
+	RET
+	
 trie_borrar:
 	; COMPLETAR AQUI EL CODIGO
 
 nodo_crear:
 ; nodo * nodo_crear (char c)
-	SUB RBP 8
-	MOV DL DIL
-	MOV RCX NULL
-	MOV RDI size_nodo 
-	call malloc
-	mov [rax] RCX
-	mov [rax + offset_sig] RCX
-	mov [rax + offset_hijos] DIL
-	mov [rax + offset_c] TRUE
-	ADD RBP 8
+	PUSH RBP
+	MOV RBP RSP
+	PUSH RBX
+	SUB RSP 8
+	MOV RBX RDI 
 	
+	MOV RDI size_nodo 
+	CALL malloc
+	
+	
+	mov [rax + offset_sig] NULL
+	mov [rax + offset_hijos] NULL
+	mov [rax + offset_c] BL
+	mov [rax + offset_fin] FALSE
+	
+	
+	ADD RSP 8
+	POP RBX
+	POP RBP
+	RET
 
 insertar_nodo_en_nivel:
 	; COMPLETAR AQUI EL CODIGO

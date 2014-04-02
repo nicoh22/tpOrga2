@@ -1,0 +1,52 @@
+
+Cheatsheet para Orga 2 (Ensamblador, TP 1)
+
+Cuando se difiere entre 32 y 64 bits, se tiene en cuenta solo en 64 bits
+
+Para editar, Markdown Cheatsheet
+Pila
+
+    Crece numéricamente para atrás (para agrandar la pila se hace SUB y para achicarla se hace ADD)
+    RBP: Base de la pila
+    RSP: Tope
+    Alineada a 16 (al momento de llamar funciones)
+    Para mantenerla alineada a 16, hay que hacer una cantidad de llamadas de PUSH impares antes de hacer un call (porque cuando se hace el CALL se pushea la direccion de retorno, quedando con la misma paridad con la que se ingresó a la función)
+
+Convención C
+
+    Se preservan: RBX, R12, R13, R14, R15
+    Se retorna el resultado en RAX o XMM0
+
+Antes de una función...
+
+PUSH RBP
+MOV RBP, RSP
+PUSH RBX
+PUSH R12
+PUSH R13
+PUSH R14
+PUSH R15
+
+Al final de una función....
+
+POP R15
+POP R14
+POP R13
+POP R12
+POP RBX
+RET
+
+Pasaje de Parámetros
+
+    Se pasan de izquierda a derecha, siempre respetando el orden
+    Entero o Puntero: RDI, RSI, RDX, RCX, R8 y R9
+    Flotante: A través de los XMMs
+    Si no hay más registros, a través de la pila, pusheándose de derecha a izquierda.
+
+Data Types
+
+    Int: 4 bytes
+    Char: 1 byte
+    Puntero: 8 bytes
+
+
