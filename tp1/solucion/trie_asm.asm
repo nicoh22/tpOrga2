@@ -11,7 +11,7 @@ global trie_pesar
 
 extern malloc
 extern free
-
+;hola
 ; SE RECOMIENDA COMPLETAR LOS DEFINES CON LOS VALORES CORRECTOS
 %define offset_sig 0
 %define offset_hijos 8
