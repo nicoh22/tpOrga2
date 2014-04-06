@@ -91,28 +91,58 @@ trie_borrar:
 	POP R12
 	CMP R12 NULL
 	JZ .fin
+	MOV RDI R12
+	MOV R12 [RDI + offset_sig]
+	MOV R13 [RDI + offset_hijos]
+	CALL free
 	JMP .siguiente
 .fin:
 	MOV RDI [RBP - 8]
 	CALL free
+	
 	POP R13
 	POP R12
 	POP RBX
+	POP RDI
 	POP RBP
 	RET
 	
 nodo_crear:
 ; nodo * nodo_crear (char c)
+
 	PUSH RBP
 	MOV RBP RSP
 	PUSH RBX
 	SUB RSP 8
-	MOV RBX RDI 
+	MOV BL DIL 
 	
+	CMP BL 122	
+	JG .conv97
+
+	CMP BL 97
+	JGE .fin
+	
+	CMP BL 90
+	JG .conv97
+	
+	CMP BL 65
+	JGE .minuscula
+	
+	CMP BL 57
+	JG .conv97
+	
+	CMP BL 48
+	JGE .fin
+	
+.conv97: 	
+	MOV BL 97
+	JMP .fin
+	
+.minuscula:
+	ADD BL 32
+.fin:
 	MOV RDI size_nodo 
-	CALL malloc
-	
-	
+	CALL malloc	
 	mov [rax + offset_sig] NULL
 	mov [rax + offset_hijos] NULL
 	mov [rax + offset_c] BL
@@ -135,11 +165,6 @@ trie_agregar_palabra:
 	PUSH RBX
 	MOV RBX [RDI]
 	CMP RBX NULL
-	je
-.null:
-
-
-.notnull:	
 	
 	
 trie_construir:
