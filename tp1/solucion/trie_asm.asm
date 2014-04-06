@@ -91,7 +91,7 @@ trie_borrar:
 	POP R12
 	CMP R12 NULL
 	JZ .fin
-	
+	JMP .siguiente
 .fin:
 	MOV RDI [RBP - 8]
 	CALL free
