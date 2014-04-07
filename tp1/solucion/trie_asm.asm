@@ -155,7 +155,9 @@ nodo_crear:
 	RET
 
 insertar_nodo_en_nivel:
-	; COMPLETAR AQUI EL CODIGO
+	; nodo *insertar_nodo_en_nivel (nodo **nivel, char c)
+	
+	
 
 trie_agregar_palabra:
 	; void trie_agregar_palabra(trie *t, char *p)
@@ -163,10 +165,20 @@ trie_agregar_palabra:
 	PUSH RBP
 	MOV RBP RSP
 	PUSH RBX
+	PUSH R12
+	
 	MOV RBX [RDI]
-	CMP RBX NULL
+	MOV R12 RSI
+	CMP RBX NULL	
+	JZ ?
+.ciclo:
+	MOV DIL [R12]
+	CMP DIL NULL
+	JZ .fin
+	CALL nodo_crear
 	
 	
+.fin:	
 trie_construir:
 	; COMPLETAR AQUI EL CODIGO
 
@@ -184,12 +196,5 @@ palabras_con_prefijo:
 	
 ;AUX
 
-nodo_borrar:
-	PUSH RBP
-	MOV RBP RSP
-	
-	CALL free
-	
-	POP RBP
-	RET
+
 
