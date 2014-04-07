@@ -156,9 +156,33 @@ nodo_crear:
 
 insertar_nodo_en_nivel:
 	; nodo *insertar_nodo_en_nivel (nodo **nivel, char c)
+	;RDI **nivel RSI char
+	PUSH RBP
+	MOV RBP RSP	
+	PUSH RBX
+	PUSH R12
 	
+	MOV RBX RSI
+	MOV R12 RDI	
+.ciclo:	
+	CMP [R12] NULL
+	JZ .crear
 	
-
+.crear:
+	
+	MOV RDI size_nodo
+	CALL malloc
+	mov [rax + offset_sig] 
+	mov [rax + offset_hijos] 
+	mov [rax + offset_c] BL
+	mov [rax + offset_fin] false
+	
+.fin:	
+	POP R12
+	POP RBX
+	POP RBP
+	RET
+	
 trie_agregar_palabra:
 	; void trie_agregar_palabra(trie *t, char *p)
 	;RDI trie RSI char*
@@ -175,7 +199,6 @@ trie_agregar_palabra:
 	MOV DIL [R12]
 	CMP DIL NULL
 	JZ .fin
-	CALL nodo_crear
 	
 	
 .fin:	
