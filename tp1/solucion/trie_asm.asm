@@ -35,8 +35,7 @@ extern free
 %define TRUE 1
 
 section .rodata
-false: db FALSE
-true: db TRUE
+
 section .data
 
 section .text
@@ -50,7 +49,7 @@ trie_crear:
 	MOV RDI size_trie 
 	CALL malloc	
 	
-	mov [rax + offset_raiz] NULL
+	mov qword [rax + offset_raiz] NULL
 	
 	POP RBP
 	RET
@@ -113,17 +112,17 @@ nodo_crear:
 	PUSH RBP
 	MOV RBP RSP
 	PUSH RBX
-	SUB RSP 8
+	SUB RSP 8; ok
 	 	
 	CALL convChar
-	MOV RBX RAX
+	MOV BL AL
 	
 	MOV RDI size_nodo 
 	CALL malloc	
-	mov [rax + offset_sig] NULL
-	mov [rax + offset_hijos] NULL
+	mov qword [rax + offset_sig] NULL
+	mov qword [rax + offset_hijos] NULL
 	mov [rax + offset_c] BL
-	mov [rax + offset_fin] false
+	mov byte [rax + offset_fin] FALSE
 	ADD RSP 8
 	POP RBX
 	POP RBP
