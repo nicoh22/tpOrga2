@@ -137,21 +137,26 @@ insertar_nodo_en_nivel:
 	PUSH RBX
 	PUSH R12
 	
-	
-	MOV RBX RSI
 	MOV R12 RDI	
-	
-	
+	MOV RDI RSI
+	CALL convChar
+	MOV RBX RAX
+	; BL char R12 **nodo
 	MOV RCX [R12]
 .ciclo:	
 	CMP RCX NULL
 	JZ .crear
-	
-	
+	MOV DL [RCX + offset_c]
+	CMP DL BL
+	JZ .hit
+	MOV RCX [RCX + offset_sig]
+	JMP .ciclo
+.hit:
+	MOV RAX RCX
+	JZ .fin 	 
 .crear:
 	MOV RDI RBX 
 	CALL crear_nodo
-	
 .fin:	
 	POP R12
 	POP RBX
