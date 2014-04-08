@@ -114,41 +114,16 @@ nodo_crear:
 	MOV RBP RSP
 	PUSH RBX
 	SUB RSP 8
-	MOV BL DIL 
+	 	
+	CALL convChar
+	MOV RBX RAX
 	
-	CMP BL 122	
-	JG .conv97
-
-	CMP BL 97
-	JGE .fin
-	
-	CMP BL 90
-	JG .conv97
-	
-	CMP BL 65
-	JGE .minuscula
-	
-	CMP BL 57
-	JG .conv97
-	
-	CMP BL 48
-	JGE .fin
-	
-.conv97: 	
-	MOV BL 97
-	JMP .fin
-	
-.minuscula:
-	ADD BL 32
-.fin:
 	MOV RDI size_nodo 
 	CALL malloc	
 	mov [rax + offset_sig] NULL
 	mov [rax + offset_hijos] NULL
 	mov [rax + offset_c] BL
 	mov [rax + offset_fin] false
-	
-	
 	ADD RSP 8
 	POP RBX
 	POP RBP
@@ -162,20 +137,20 @@ insertar_nodo_en_nivel:
 	PUSH RBX
 	PUSH R12
 	
+	
 	MOV RBX RSI
 	MOV R12 RDI	
+	
+	
+	MOV RCX [R12]
 .ciclo:	
-	CMP [R12] NULL
+	CMP RCX NULL
 	JZ .crear
 	
-.crear:
 	
-	MOV RDI size_nodo
-	CALL malloc
-	mov [rax + offset_sig] 
-	mov [rax + offset_hijos] 
-	mov [rax + offset_c] BL
-	mov [rax + offset_fin] false
+.crear:
+	MOV RDI RBX 
+	CALL crear_nodo
 	
 .fin:	
 	POP R12
@@ -201,7 +176,9 @@ trie_agregar_palabra:
 	JZ .fin
 	
 	
-.fin:	
+.fin:
+
+	
 trie_construir:
 	; COMPLETAR AQUI EL CODIGO
 
@@ -219,5 +196,34 @@ palabras_con_prefijo:
 	
 ;AUX
 
+convChar:
+	PUSH RBP
+	MOV RBP RSP
+	MOV RAX RDI 
+	
+	CMP AL 122	
+	JG .conv97
 
-
+	CMP AL 97
+	JGE .fin
+	
+	CMP AL 90
+	JG .conv97
+	
+	CMP AL 65
+	JGE .minuscula
+	
+	CMP AL 57
+	JG .conv97
+	
+	CMP AL 48
+	JGE .fin
+	
+.conv97: 	
+	MOV AL 97
+	JMP .fin
+.minuscula:
+	ADD AL 32	
+.fin: 
+	POP RBP
+	RET
