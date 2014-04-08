@@ -156,7 +156,8 @@ insertar_nodo_en_nivel:
 	JZ .fin 	 
 .crear:
 	MOV RDI RBX 
-	CALL crear_nodo
+	CALL crear_nodo ; necesita laburo aca enchufar anterior asignar siguiente
+	
 .fin:	
 	POP R12
 	POP RBX
@@ -166,29 +167,37 @@ insertar_nodo_en_nivel:
 trie_agregar_palabra:
 	; void trie_agregar_palabra(trie *t, char *p)
 	;RDI trie RSI char*
+	;asumo que insertar nodo nivel esta bien
 	PUSH RBP
 	MOV RBP RSP
 	PUSH RBX
-	PUSH R12
+	PUSH R12; Alineada
 	
-	MOV RBX [RDI]
+	MOV RBX RDI
 	MOV R12 RSI
-	CMP RBX NULL	
-	JZ ?
+	
+	
 .ciclo:
-	MOV DIL [R12]
-	CMP DIL NULL
+	MOV SIL [R12] ; char
+	CMP SIL NULL
 	JZ .fin
-	
-	
+	MOV RDI RBX; **Nodo
+	CALL insertar_nodo_en_nivel ; RDI **nodo RSI char =RAX *nodo
+	ADD RAX offset_hijos
+	MOV RBX RAX
+	ADD R12 1
+	JMP .ciclo
 .fin:
-
-	
+	POP R12
+	POP RBX
+	POP RBP
+	RET
 trie_construir:
 	; COMPLETAR AQUI EL CODIGO
 
 trie_imprimir:
-	; COMPLETAR AQUI EL CODIGO
+	; void trie_imprimir(trie *t, char *nombre_archivo)
+
 
 buscar_palabra:
 	; COMPLETAR AQUI EL CODIGO
