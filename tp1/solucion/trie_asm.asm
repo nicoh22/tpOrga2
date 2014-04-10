@@ -97,7 +97,6 @@ trie_borrar:
 .fin:
 	MOV RDI [RBP - 8]
 	CALL free
-	
 	POP R13
 	POP R12
 	POP RBX
@@ -131,41 +130,59 @@ insertar_nodo_en_nivel:
 	; nodo *insertar_nodo_en_nivel (nodo **nivel, char c)
 	;RDI **nivel RSI char
 	PUSH RBP
-	MOV RBP RSP	
-	PUSH RBX
-	PUSH R12
-	
-	MOV R12 RDI	
+	MOV RBP RSP
+	SUB RSP 8	
+	PUSH RBX ;char
+	PUSH R12 ;actual
+	PUSH R13 ;anterior Alineada
+
+	MOV [RBP - 8] RDI	
 	MOV RDI RSI
 	CALL convChar
 	MOV RBX RAX
-	; BL char R12 **nodo
-	MOV RCX [R12]
+	; BL char R12 *nodo
+	MOV R13 [RBP - 8]
+	MOV R12	[R13]
+	CMP R12 NULL
+	JZ .crearEspecial
+
 .ciclo:	
-	CMP RCX NULL
+	CMP R12 NULL
 	JZ .crear
-	MOV DL [RCX + offset_c]
+	MOV DL [R12 + offset_c]
 	CMP DL BL
 	JZ .hit
-	MOV RCX [RCX + offset_sig]
+	JG .crear
+	MOV R13 R12
+	MOV R12 [R12 + offset_sig]
 	JMP .ciclo
-.hit:
-	MOV RAX RCX
-	JZ .fin 	 
+
 .crear:
-	MOV RDI RBX 
-	CALL crear_nodo ; necesita laburo aca enchufar anterior asignar siguiente
-	
-.fin:	
+	MOV RDI RBX
+	CALL crear_nodo	
+	MOV [R13 + offset_sig] RAX
+	MOV [RAX + offset_sig] R12
+	JMP .fin
+.hit:
+	MOV RAX R12
+	JMP .fin
+		 	 
+.crearEspecial:
+	MOV RDI RBX
+	CALL crear_nodo
+	MOV [R13] RAX
+.fin:
+	POP R13	
 	POP R12
 	POP RBX
+	ADD RSP 8
 	POP RBP
 	RET
 	
 trie_agregar_palabra:
 	; void trie_agregar_palabra(trie *t, char *p)
 	;RDI trie RSI char*
-	;asumo que insertar nodo nivel esta bien
+	;insertar nodo nivel esta bien
 	PUSH RBP
 	MOV RBP RSP
 	PUSH RBX
@@ -173,7 +190,6 @@ trie_agregar_palabra:
 	
 	MOV RBX RDI
 	MOV R12 RSI
-	
 	
 .ciclo:
 	MOV SIL [R12] ; char
@@ -185,11 +201,13 @@ trie_agregar_palabra:
 	MOV RBX RAX
 	ADD R12 1
 	JMP .ciclo
+	
 .fin:
 	POP R12
 	POP RBX
 	POP RBP
 	RET
+
 trie_construir:
 	; COMPLETAR AQUI EL CODIGO
 
