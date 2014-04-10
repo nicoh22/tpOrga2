@@ -209,7 +209,26 @@ trie_agregar_palabra:
 	RET
 
 trie_construir:
-	; COMPLETAR AQUI EL CODIGO
+	; trie *trie_construir(char *nombre_archivo)
+	;RDI *char
+	%define buffer 1024
+	%define rformat "r"
+	PUSH RBP
+	MOV RBP RSP
+	PUSH RBX
+	PUSH R12
+	PUSH R13
+	MOV RBX RDI
+	
+	MOV qword RDI buffer
+	CALL malloc
+	MOV R12 RAX
+	
+	XOR RSI RSI
+	MOV RDI RBX
+	MOV RSI rformat
+	CALL fopen
+	MOV R13 RAX
 
 trie_imprimir:
 	; void trie_imprimir(trie *t, char *nombre_archivo)
