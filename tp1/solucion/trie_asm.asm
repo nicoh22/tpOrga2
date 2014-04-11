@@ -213,11 +213,13 @@ trie_construir:
 	;RDI *char
 	%define buffer 1024
 	%define rformat "r"
+	%define sformat "%s"
 	PUSH RBP
 	MOV RBP RSP
 	PUSH RBX
 	PUSH R12
 	PUSH R13
+	PUSH R14
 	MOV RBX RDI
 	
 	MOV qword RDI buffer
@@ -229,7 +231,22 @@ trie_construir:
 	MOV RSI rformat
 	CALL fopen
 	MOV R13 RAX
-
+	;RBX *archivo R12 *buffer R13 *stream R14 trie
+	
+	CALL trie_crear
+	MOV R14 RAX
+	
+.ciclo:
+	XOR RSI RSI
+	MOV RDI R13
+	MOV RSI sformat
+	MOV RDX R12
+	CALL fscanf
+		
+	
+	 
+	
+	
 trie_imprimir:
 	; void trie_imprimir(trie *t, char *nombre_archivo)
 
