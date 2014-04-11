@@ -214,6 +214,7 @@ trie_construir:
 	%define buffer 1024
 	%define rformat "r"
 	%define sformat "%s"
+	%define endFile -1
 	PUSH RBP
 	MOV RBP RSP
 	PUSH RBX
@@ -231,10 +232,11 @@ trie_construir:
 	MOV RSI rformat
 	CALL fopen
 	MOV R13 RAX
-	;RBX *archivo R12 *buffer R13 *stream R14 trie
+	;RBX *archivo| R12 *buffer| R13 *stream| R14 trie
 	
 	CALL trie_crear
 	MOV R14 RAX
+	
 	
 .ciclo:
 	XOR RSI RSI
@@ -242,10 +244,27 @@ trie_construir:
 	MOV RSI sformat
 	MOV RDX R12
 	CALL fscanf
-		
+	CMP EAX endFile
+	JZ .fin
 	
+	MOV RDI R14
+	MOV RSI R12
+	CALL trie_agregar_palabra
+	
+	JMP .ciclo
+.fin:	
+	MOV RDI R12; chau buffer
+	CALL free
+	
+	MOV RDI R13
+	CALL fclose
 	 
-	
+	POP R14
+	POP R13
+	POP R12
+	POP RBX
+	POP RBP
+	RET
 	
 trie_imprimir:
 	; void trie_imprimir(trie *t, char *nombre_archivo)
