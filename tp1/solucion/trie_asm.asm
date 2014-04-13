@@ -290,24 +290,27 @@ trie_imprimir:
 	CALL fopen
 	MOV R13 RAX ; R13 stream RBX trie R12 nombre 
 	
+	MOV R12 [RBX]
+	CMP R12 NULL
+	JZ .vacio
+	
 	MOV qword RDI buffer
 	CALL malloc
 	MOV R14 RAX
 	MOV [RBP-8] RAX
-	MOV R12 [RBX]
-	CMP R12 NULL
-	JZ .vacio
+	
+
 	
 	PUSH NULL
 	SUB RSP 8
 .sigPalabra:
 	MOV	R15 [R12 + offset_sig]
 	CMP R15 NULL
-	JZ .ciclo
+	JZ .noPush
 	PUSH R15
 	SUB RSP 8
 	
-.ciclo:	; R14 bufferAct R13 stream R12 actNodo RBX trie CL char? R15 sig
+.noPush:	; R14 bufferAct R13 stream R12 actNodo RBX trie CL char? R15 sig
 	
 	MOV CL [R12 + offset_c]
 	MOV [R14] CL	;copia char en buffer
@@ -316,7 +319,8 @@ trie_imprimir:
 	JZ .imprimirbuffer
 	ADD R14 1	
 	MOV R12 [R12 + offset_hijos]	
-
+	JMP .sigPalabra
+	
 .imprimirBuffer:
 	
 	MOV byte [R14 +1] 32
@@ -330,14 +334,16 @@ trie_imprimir:
 	ADD RSP 8
 	POP R15
 	CMP R15 NULL
-	JZ .fin
+	JZ .liberaBuffer
 	
 	MOV R14 [RBP - 8]
 	MOV R12 R15
 	JMP .sigPalabra
 	
-		
-	
+.liberaBuffer:
+	MOV RDI [RBP - 8]
+	CALL free		
+	JMP .fin	
 .vacio:
 	XOR RSI RSI
 	MOV byte [R14] "<vacio> ", 0
