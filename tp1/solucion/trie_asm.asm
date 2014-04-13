@@ -37,7 +37,11 @@ extern fscanf
 
 %define FALSE 0
 %define TRUE 1
-
+%define append "a"
+%define sformat "%s"
+%define buffer 1024
+%define rformat "r";
+%define endFile -1;
 section .rodata
 
 section .data
@@ -210,10 +214,7 @@ trie_agregar_palabra:
 trie_construir:
 	; trie *trie_construir(char *nombre_archivo)
 	;RDI *char
-	%define buffer 1024;
-	%define rformat "r";
-	%define sformat "%s";
-	%define endFile -1;
+
 	PUSH RBP;
 	MOV RBP, RSP;
 	PUSH RBX;
@@ -264,9 +265,7 @@ trie_construir:
 	
 trie_imprimir:
 	; void trie_imprimir(trie *t, char *nombre_archivo)
-	%define append "a";
-	%define sformat "%s";
-	%define buffer 1024;
+
 	PUSH RBP;
 	MOV RBP, RSP;
 	SUB RSP, 8;
