@@ -203,6 +203,8 @@ trie_agregar_palabra:
 	JMP .ciclo
 	
 .fin:
+	SUB RBX offset_hijos
+	MOV byte [RBX + offset_fin] TRUE
 	POP R12
 	POP RBX
 	POP RBP
@@ -268,8 +270,102 @@ trie_construir:
 	
 trie_imprimir:
 	; void trie_imprimir(trie *t, char *nombre_archivo)
+	%define append "a"
+	%define sformat "%s"
+	%define buffer 1024
+	PUSH RBP
+	MOV RBP RSP
+	SUB RSP 8
+	PUSH RBX
+	PUSH R12
+	PUSH R13
+	PUSH R14
+	PUSH R15
+	
+	MOV RBX RDI
+	MOV R12 RSI
+	XOR RSI RSI
+	MOV RDI R12
+	MOV RSI append
+	CALL fopen
+	MOV R13 RAX ; R13 stream RBX trie R12 nombre 
+	
+	MOV qword RDI buffer
+	CALL malloc
+	MOV R14 RAX
+	MOV [RBP-8] RAX
+	MOV R12 [RBX]
+	CMP R12 NULL
+	JZ .vacio
+	
+	PUSH NULL
+	SUB RSP 8
+.sigPalabra:
+	MOV	R15 [R12 + offset_sig]
+	CMP R15 NULL
+	JZ .ciclo
+	PUSH R15
+	SUB RSP 8
+	
+.ciclo:	; R14 bufferAct R13 stream R12 actNodo RBX trie CL char? R15 sig
+	
+	MOV CL [R12 + offset_c]
+	MOV [R14] CL	;copia char en buffer
+	MOV AL [R12 + offset_fin] 
+	CMP AL TRUE
+	JZ .imprimirbuffer
+	ADD R14 1	
+	MOV R12 [R12 + offset_hijos]	
 
-
+.imprimirBuffer:
+	
+	MOV byte [R14 +1] 32
+	MOV byte [R14 + 2] 0  
+	XOR RSI RSI
+	MOV	RDI R13
+	MOV RSI sformat
+	MOV RDX [RBP - 8]
+	CALL fprintf
+	
+	ADD RSP 8
+	POP R15
+	CMP R15 NULL
+	JZ .fin
+	
+	MOV R14 [RBP - 8]
+	MOV R12 R15
+	JMP .sigPalabra
+	
+		
+	
+.vacio:
+	XOR RSI RSI
+	MOV byte [R14] "<vacio> ", 0
+	MOV	RDI R13
+	MOV RSI sformat
+	MOV RDX R14
+	CALL fprintf
+	
+.fin:
+	XOR RSI RSI
+	XOR RDX RDX
+	MOV	RDI R13
+	MOV RSI sformat
+	MOV RDX 10
+	CALL fprintf
+	
+	
+	
+	MOV RDI R13
+	CALL fclose
+	POP R14
+	POP R13
+	POP R12
+	POP RBX
+	ADD RSP 8
+	POP RBP
+	RET
+		
 buscar_palabra:
 	; COMPLETAR AQUI EL CODIGO
 
