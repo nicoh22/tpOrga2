@@ -37,15 +37,18 @@ extern fscanf
 
 %define FALSE 0
 %define TRUE 1
-%define append "a"
-%define sformat "%s"
+
+
 %define buffer 1024
-%define rformat "r";
 %define endFile -1;
 section .rodata
 
 section .data
-
+rformat db "r"
+append db "a"
+sformat db "%s"
+vactrie db "<vacio> ", 0
+endLine db 10, 0
 section .text
 
 ; FUNCIONES OBLIGATORIAS. PUEDEN CREAR LAS FUNCIONES AUXILIARES QUE CREAN CONVENIENTES
@@ -279,7 +282,7 @@ trie_imprimir:
 	MOV R12, RSI; *nombre
 	XOR RSI, RSI; 0
 	MOV RDI, R12; *nombre
-	MOV RSI, append; formato 
+	LEA RSI, [append]; formato 
 	CALL fopen;
 	MOV R13, RAX ; R13 stream RBX trie R12 nombre 
 	
@@ -334,22 +337,28 @@ trie_imprimir:
 	CALL free;		
 	JMP .fin;	
 .vacio:
- 
-	XOR RSI, RSI;
-	MOV RDI, R13;
-	MOV RSI, sformat;
-	MOV RDX, "<vacio> ";
-	CALL fprintf;
-.fin:
+
+ 	XOR RAX, RAX
+	MOV AL, 1
 	XOR RSI, RSI;
 	XOR RDX, RDX;
 	MOV RDI, R13;
 	MOV RSI, sformat;
-	MOV RDX, 10;
+	LEA RDX, [vactrie];
+	CALL fprintf;
+
+.fin:
+	XOR RSI, RSI;
+	XOR RDX, RDX;
+	MOV RDI, R13;
+	LEA RSI, [sformat];
+	LEA RDX, [endLine];
 	CALL fprintf;
 	
 	MOV RDI, R13;
 	CALL fclose;
+
+	POP R15;	
 	POP R14;
 	POP R13;
 	POP R12;
