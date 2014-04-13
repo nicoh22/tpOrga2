@@ -338,9 +338,10 @@ trie_imprimir:
 .vacio:
 .msg:	DB "<vacio> ", 0
 	XOR RSI, RSI;
+	MOV byte [R14], .msg;
 	MOV RDI, R13;
 	MOV RSI, sformat;
-	MOV RDX, .msg;
+	MOV RDX, R14;
 	CALL fprintf;
 	
 .fin:
