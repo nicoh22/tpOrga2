@@ -272,15 +272,14 @@ trie_imprimir:
 	PUSH RBX;
 	PUSH R12;
 	PUSH R13;
-
 	PUSH R14;
-	PUSH R15;
+	PUSH R15; A
 	
-	MOV RBX, RDI;
-	MOV R12, RSI;
-	XOR RSI, RSI;
-	MOV RDI, R12;
-	MOV RSI, append;
+	MOV RBX, RDI; *trie
+	MOV R12, RSI; *nombre
+	XOR RSI, RSI; 0
+	MOV RDI, R12; *nombre
+	MOV RSI, append; formato 
 	CALL fopen;
 	MOV R13, RAX ; R13 stream RBX trie R12 nombre 
 	
@@ -335,13 +334,12 @@ trie_imprimir:
 	CALL free;		
 	JMP .fin;	
 .vacio:
-.msg:	DB "<vacio> ", 0
+ 
 	XOR RSI, RSI;
 	MOV RDI, R13;
 	MOV RSI, sformat;
-	MOV RDX, .msg;
+	MOV RDX, "<vacio> ";
 	CALL fprintf;
-	
 .fin:
 	XOR RSI, RSI;
 	XOR RDX, RDX;
