@@ -44,9 +44,9 @@ extern fscanf
 section .rodata
 
 section .data
-rformat db "r"
+rformat db "r", 0
 append db "a"
-sformat db "%s"
+sformat db "%s", 0
 vactrie db "<vacio> ", 0
 endLine db 10, 0
 section .text
@@ -315,7 +315,7 @@ trie_imprimir:
 	CMP AL, TRUE;
 	JZ .imprimir;
 	ADD R14, 1;	
-	
+	ADD RBX, 1;
 	MOV R12, [R12 + offset_hijos];	
 	JMP .sigPalabra;
 	
@@ -328,7 +328,7 @@ trie_imprimir:
 	MOV RDX, [RBP - 8];
 	CALL fprintf;
 	
-	CMP [R12 + offset_hijos], NULL
+	CMP qword [R12 + offset_hijos], NULL
 	JZ .rama
 	ADD RBX, 1;
 	ADD R14, 1;	
@@ -336,11 +336,10 @@ trie_imprimir:
 	JMP .sigPalabra;	
 
 .rama:
-	POP RDX;
+	POP RBX;
 	POP R15;
 	CMP R15, NULL;
-	JZ .liberaBuffer;
-	MOV RBX, RDX; 
+	JZ .liberaBuffer; 
 	MOV R14, [RBP - 8];
 	ADD R14, RBX;
 	MOV R12, R15;
@@ -352,7 +351,6 @@ trie_imprimir:
 	JMP .fin;	
 
 .vacio:
-
  	XOR RAX, RAX;
 	MOV AL, 1;
 	XOR RSI, RSI;
@@ -361,13 +359,12 @@ trie_imprimir:
 	MOV RSI, sformat;
 	LEA RDX, [vactrie];
 	CALL fprintf;
-
 .fin:
 	XOR RSI, RSI;
 	XOR RDX, RDX;
 	MOV RDI, R13;
-	LEA RSI, [sformat];
-	LEA RDX, [endLine];
+	MOV RSI, sformat;
+	MOV RDX, endLine;
 	CALL fprintf;
 	
 	MOV RDI, R13;
@@ -383,13 +380,54 @@ trie_imprimir:
 	RET;
 		
 buscar_palabra:
-	; COMPLETAR AQUI EL CODIGO
+	; bool f(*trie, char +p) RDI trie RSI char
+	PUSH RBP
+	MOV RBP, RSP
+	PUSH RBX
+	PUSH R12
+	
+	MOV RBX, RSI
+	MOV R12, [RDI]
+	
+	CMP R12, NULL
+	JZ .false
+	
+.ciclo:	;r12 nodoact rbx *char act r13
+	MOV CL, [RBX];
+	CMP CL, [R12 + offset_c]; 
+	JZ .hit;
+	MOV R12, [R12 + offset_sig];
+	CMP R12, NULL
+	JZ .false
+	JMP .ciclo	
+.hit:
+	CMP byte [RBX + 1], NULL 
+	JZ .fin
+	ADD RBX, 1;
+	MOV R12, [R12 + offset_hijos]
+	CMP R12, NULL
+	JZ .false 
+	JMP .ciclo
 
+.false:
+	XOR RAX, RAX
+	MOV AL, FALSE
+	JMP .salida	
+.fin: ;
+	XOR RAX, RAX 
+	MOV AL, [R12 + offset_fin]
+	
+.salida:
+	POP R12
+	POP RBX
+	POP RBP
+	RET
+	
 trie_pesar:
 	; COMPLETAR AQUI EL CODIGO
-
+		
 palabras_con_prefijo:
-	; COMPLETAR AQUI EL CODIGO
+	; listaP* (trie* t, char * prefijo) 
 	
 ;AUX
 
@@ -424,4 +462,34 @@ convChar:
 .fin: 
 	POP RBP;
 	RET;
-
+	
+nodo_prefijo: *nodo RDI *Char RSI
+	PUSH RBP
+	MOV RBP, RSP
+	PUSH RBX
+	PUSH R12
+	
+	MOV RBX, RDI
+	MOV R12, RSI
+	; RBX nodo act R12 char act
+.ciclo:
+	MOV CL, [R12]
+	CMP CL, NULL
+	JZ .fin;
+	
+	CMP [RBX + offset_c], CL
+	JZ .hijos
+	MOV RBX, [RBX + offset_sig]
+	CMP RBX, NULL
+	JZ .miss
+	JMP .ciclo	
+.hijos:
+	MOV RBX, [RBX + offset_hijos]
+	CMP RBX, NULL
+	JZ .miss
+	ADD R12, 1
+	JMP .ciclo
+	
+.miss: 
+	
+		

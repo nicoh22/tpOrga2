@@ -1,4 +1,7 @@
-autista <vacio> o <vacio> gato <vacio> rone <vacio> 
-<vacio> autista <vacio> o <vacio> gato <vacio> rone <vacio> 
-<vacio> autista <vacio> o <vacio> gato <vacio> rone <vacio> 
-<vacio> 
+autista o omata gato rone 
+autista auto automata gato grone 
+auto automata autor gato gorrion 
+auto automata autor gato gorrion 
+auto automata autor gato gorrion 
+auto automata autor gato gorrion 
+auto automata autor gato gorrion 
