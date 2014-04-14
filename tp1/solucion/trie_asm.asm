@@ -424,8 +424,23 @@ buscar_palabra:
 	RET
 	
 trie_pesar:
-	; COMPLETAR AQUI EL CODIGO
-		
+	; double trie_pesar(trie *t, double (*funcion_pesaje)(char*))
+	PUSH RBP
+	MOV RBP, RSP
+	PUSH RBX
+	PUSH R12
+	PUSH R13
+	PUSH R14
+	
+	MOV RBX, RDI
+	MOV R12, RSI
+	
+	PUSH NULL
+	
+	
+.ciclo:	
+	CALL R12
+
 palabras_con_prefijo:
 	; listaP* (trie* t, char * prefijo) 
 	PUSH RBP
@@ -475,8 +490,8 @@ palabras_con_prefijo:
 	MOV RSI, R12
 	CALL lista_agregar
 	
-.hijos:	; R14 nodoinicio r12 *c pref() rbx buf r13 lista 
-	 MOV R14, [R14 + offset_hijos]
+.hijos:	; R14 nodoinicio R12 *c pref() RBX buf R13 lista R8 sig RCX cont
+	MOV R14, [R14 + offset_hijos]
 	XOR RCX, RCX
 	JMP .nopush
 .ciclo:
@@ -488,17 +503,25 @@ palabras_con_prefijo:
 .nopush:	
 	MOV DL, [R14 + offset_c]
 	MOV [RBX], DL
-	
-	
-.agregar:
-	MOV RDI, [RBP - 16]
-	MOV RSI, [RBP - 8]	
-	CALL buscar_palabra
-	CMP RAX, TRUE
-	JNE .hijos
+	MOV DL, [R14 + offset_c]
+	CMP DL, TRUE
+	JNE .noagregar
+	MOV byte [RBX + 1], 0 
 	MOV RDI, R13
 	MOV RSI, [RBP - 8]
 	CALL lista_agregar
+.noagregar:
+	ADD RCX, 1
+	MOV R14, [R14 + offset_hijos]
+	CMP R14, NULL
+	JNE .ciclo
+	POP RAX
+	POP R14
+	CMP r14, null
+	JZ .fin
+	SUB RCX, RAX
+	SUB RBX, RCX
+	JMP.ciclo
 .fin:
 	MOV RAX, R13
 	POP R14
