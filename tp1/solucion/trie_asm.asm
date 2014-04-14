@@ -428,7 +428,85 @@ trie_pesar:
 		
 palabras_con_prefijo:
 	; listaP* (trie* t, char * prefijo) 
+	PUSH RBP
+	MOV RBP, RSP
+	SUB RSP, 16
+	PUSH RBX
+	PUSH R12
+	PUSH R13
+	PUSH R14
 	
+	MOV RBX, RDI
+	MOV R12, RSI
+	
+	CALL lista_crear
+	MOV R13, RAX 
+	MOV RDI, [RBX]
+	MOV RSI, R12
+	CALL nodo_prefijo
+	
+	MOV R14, RAX; R14nodopre R13lista R12*char RBX*trie
+	CMP R14, NULL
+	JZ .fin
+	MOV [RBP - 16], RBX
+	MOV qword RDI, buffer
+	CALL malloc
+	MOV RBX, RAX
+	MOV [RBP - 8], RBX
+	
+	;rbx bufferact r12 pref R14 nodo 
+	
+.cargarPrefijo:
+	MOV CL, [R12]
+	CMP CL, NULL
+	JZ .prefijoPalabra
+	MOV [RBX], CL
+	ADD RBX, 1
+	ADD R12, 1
+	JMP .cargarPrefijo
+	
+.prefijoPalabra:
+	MOV RDI, [RBP - 16]
+	MOV RSI, R12	
+	CALL buscar_palabra
+	CMP RAX, TRUE
+	JNE .hijos
+	MOV RDI, R13
+	MOV RSI, R12
+	CALL lista_agregar
+	
+.hijos:	; R14 nodoinicio r12 *c pref() rbx buf r13 lista 
+	 MOV R14, [R14 + offset_hijos]
+	XOR RCX, RCX
+	JMP .nopush
+.ciclo:
+	MOV R8, [R14 + offset_sig]
+	CMP R8, NULL
+	JZ .nopush
+	PUSH R8
+	PUSH RCX
+.nopush:	
+	MOV DL, [R14 + offset_c]
+	MOV [RBX], DL
+	
+	
+.agregar:
+	MOV RDI, [RBP - 16]
+	MOV RSI, [RBP - 8]	
+	CALL buscar_palabra
+	CMP RAX, TRUE
+	JNE .hijos
+	MOV RDI, R13
+	MOV RSI, [RBP - 8]
+	CALL lista_agregar
+.fin:
+	MOV RAX, R13
+	POP R14
+	POP R13
+	POP R12
+	POP RBX
+	POP RBP
+	RET
 ;AUX
 
 convChar:
@@ -472,11 +550,9 @@ nodo_prefijo: *nodo RDI *Char RSI
 	MOV RBX, RDI
 	MOV R12, RSI
 	; RBX nodo act R12 char act
-.ciclo:
 	MOV CL, [R12]
-	CMP CL, NULL
-	JZ .fin;
-	
+
+.ciclo:
 	CMP [RBX + offset_c], CL
 	JZ .hijos
 	MOV RBX, [RBX + offset_sig]
@@ -484,12 +560,25 @@ nodo_prefijo: *nodo RDI *Char RSI
 	JZ .miss
 	JMP .ciclo	
 .hijos:
+	ADD R12, 1
+	MOV CL, [R12]
+	CMP CL, NULL
+	JZ .fin 	
 	MOV RBX, [RBX + offset_hijos]
 	CMP RBX, NULL
 	JZ .miss
-	ADD R12, 1
 	JMP .ciclo
 	
 .miss: 
 	
-		
+	MOV qword RAX, NULL
+	JMP .salida
+.fin:
+	MOV RAX, RBX
+	
+.salida:
+	POP R12
+	POP RBX
+	POP RBP
+	RET
+	
