@@ -297,21 +297,25 @@ trie_imprimir:
 	
 	PUSH NULL;
 	SUB RSP, 8;
+	XOR RBX, RBX
+	
 .sigPalabra:
 	MOV R15, [R12 + offset_sig];
 	CMP R15, NULL;
 	JZ .noPush;
 	PUSH R15;
-	SUB RSP, 8;
+	PUSH RBX
 	
 .noPush: 
-; R14 bufferAct R13 stream R12 actNodo RBX trie CL char? R15 sig
+; R14 bufferAct R13 stream R12 actNodo RBX contador CL char? R15 sig 
+	
 	MOV CL, [R12 + offset_c];
 	MOV [R14], CL; copia char en buffer
 	MOV AL, [R12 + offset_fin]; 
 	CMP AL, TRUE;
 	JZ .imprimir;
 	ADD R14, 1;	
+	
 	MOV R12, [R12 + offset_hijos];	
 	JMP .sigPalabra;
 	
@@ -324,22 +328,33 @@ trie_imprimir:
 	MOV RDX, [RBP - 8];
 	CALL fprintf;
 	
-	ADD RSP, 8;
+	CMP [R12 + offset_hijos], NULL
+	JZ .rama
+	ADD RBX, 1;
+	ADD R14, 1;	
+	MOV R12, [R12 + offset_hijos];	
+	JMP .sigPalabra;	
+
+.rama:
+	POP RDX;
 	POP R15;
 	CMP R15, NULL;
 	JZ .liberaBuffer;
-
+	MOV RBX, RDX; 
 	MOV R14, [RBP - 8];
+	ADD R14, RBX;
 	MOV R12, R15;
 	JMP .sigPalabra;
+
 .liberaBuffer:
 	MOV RDI, [RBP - 8];
 	CALL free;		
 	JMP .fin;	
+
 .vacio:
 
- 	XOR RAX, RAX
-	MOV AL, 1
+ 	XOR RAX, RAX;
+	MOV AL, 1;
 	XOR RSI, RSI;
 	XOR RDX, RDX;
 	MOV RDI, R13;
