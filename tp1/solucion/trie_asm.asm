@@ -15,7 +15,8 @@ extern fprintf
 extern fopen
 extern fclose
 extern fscanf
-
+extern lista_crear
+extern lista_agregar
 ; SE RECOMIENDA COMPLETAR LOS DEFINES CON LOS VALORES CORRECTOS
 %define offset_sig 0
 %define offset_hijos 8
@@ -427,20 +428,89 @@ trie_pesar:
 	; double trie_pesar(trie *t, double (*funcion_pesaje)(char*))
 	PUSH RBP
 	MOV RBP, RSP
+	SUB RSP, 24
 	PUSH RBX
 	PUSH R12
 	PUSH R13
 	PUSH R14
+	PUSH R15
+	MOV RBX, [RDI]
+	MOV [RBP - 16], RBX 
+	MOV [RBP - 24], RSI
+
 	
-	MOV RBX, RDI
-	MOV R12, RSI
+	
+	
+	MOV qword RDI, buffer
+	CALL malloc
+	MOV R13, RAX
+	MOV [RBP-8], RAX
 	
 	PUSH NULL
+	PUSH 0
+	CMP RBX, NULL
+	JZ .fin
+	MOV R14, [RBX]
+	XOR RBX, RBX
+	XOR R12, R12	
 	
+	MOV qword RDI, 128
+	CALL malloc
+	MOV [RBP - 16], RAX
+	PXOR XMM0, XMM0
+	MOVDQA [RAX], XMM0
+.siguiente:
+	MOV R15, [R14 + offset_sig]
+	CMP R15, NULL
+	JZ .ciclo
+	PUSH R15
+	PUSH RBX	
 	
-.ciclo:	
-	CALL R12
+.ciclo:	;[RBP-8] INBUF R13 bufact rbx cont1 r12 cont2 R14nodo
+	MOV DL, [R14 + offset_c]
+	MOV [R13], DL
+	MOV AL, [R14 + offset_fin]; 
+	CMP AL, TRUE;
+	JZ .pesar
+.retoma:ADD R13, 1
+	ADD RBX, 1
+	MOV R14, [R14 + offset_hijos]
+	CMP R14, NULL
+	JZ .popear
+	JMP .siguiente
+.popear:
+	POP RAX
+	POP R14
+	CMP R14, NULL
+	JZ .fin
+	SUB RBX, RAX
+	SUB R13, RBX
+	JMP .siguiente
+	
+.pesar:	
+	MOV byte [R13 + 1], 0
+	MOV RDI, [RBP - 8]
+	CALL [RBP - 24]
+	ADD R12, 1
+	MOV R8, [RBP - 16]
+	MOVDQA XMM1, [R8] 
+	ADDPD XMM1, XMM0
+	MOVDQA [R8], XMM1
+	JMP .retoma
+.fin:
+	MOV R8, [RBP - 16]
+	MOVDQA XMM0, [R8]
+	
+	PXOR XMM1, XMM1
+	MOVQ XMM1, R12 
+	DIVPD XMM0, XMM1
+	mov rdi, r8
+	CALL free
+	
+	mov rdi, [rbp - 8]
+	CALL free
 
+	
 palabras_con_prefijo:
 	; listaP* (trie* t, char * prefijo) 
 	PUSH RBP
@@ -462,7 +532,7 @@ palabras_con_prefijo:
 	
 	MOV R14, RAX; R14nodopre R13lista R12*char RBX*trie
 	CMP R14, NULL
-	JZ .fin
+	JZ .end
 	MOV [RBP - 16], RBX
 	MOV qword RDI, buffer
 	CALL malloc
@@ -517,12 +587,14 @@ palabras_con_prefijo:
 	JNE .ciclo
 	POP RAX
 	POP R14
-	CMP r14, null
-	JZ .fin
+	CMP r14, NULL
+	JZ .end
 	SUB RCX, RAX
 	SUB RBX, RCX
-	JMP.ciclo
-.fin:
+	JMP .ciclo
+.end:
+	MOV RDI, [RBP - 8]
+	CALL free
 	MOV RAX, R13
 	POP R14
 	POP R13
@@ -564,7 +636,7 @@ convChar:
 	POP RBP;
 	RET;
 	
-nodo_prefijo: *nodo RDI *Char RSI
+nodo_prefijo: ;*nodo RDI *Char RSI
 	PUSH RBP
 	MOV RBP, RSP
 	PUSH RBX

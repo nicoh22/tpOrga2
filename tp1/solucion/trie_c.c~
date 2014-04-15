@@ -5,7 +5,6 @@
 
 listaP *predecir_palabras(trie *t, char *teclas) {
 	listaP *res = lista_crear;
-	
 	return res;
 }
 
