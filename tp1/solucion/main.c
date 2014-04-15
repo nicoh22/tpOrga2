@@ -12,13 +12,14 @@ trie_agregar_palabra(t,"gorrion");
 
 trie_imprimir(t, "./test.txt");
 
-
+trie *t2 = trie_construir("./test.txt");
 
 bool b = buscar_palabra(t, "autores");
 
 printf("el bool dio %i \n", b);
 
 trie_borrar(t);
+trie_borrar(t2);
     return 0;
 }
 	

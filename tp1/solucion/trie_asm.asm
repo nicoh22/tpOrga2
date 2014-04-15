@@ -233,7 +233,7 @@ trie_construir:
 	
 	XOR RSI, RSI;
 	MOV RDI, RBX;
-	MOV RSI, rformat;
+	LEA RSI, [rformat];
 	CALL fopen;
 	MOV R13, RAX;
 	;RBX *archivo| R12 *buffer| R13 *stream| R14 trie
@@ -260,6 +260,7 @@ trie_construir:
 	MOV RDI, R13;
 	CALL fclose;
 	 
+	MOV RAX, R14 
 	POP R14;
 	POP R13;
 	POP R12;

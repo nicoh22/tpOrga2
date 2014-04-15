@@ -233,7 +233,7 @@ trie_construir:
 	
 	XOR RSI, RSI;
 	MOV RDI, RBX;
-	MOV RSI, rformat;
+	LEA RSI, [rformat];
 	CALL fopen;
 	MOV R13, RAX;
 	;RBX *archivo| R12 *buffer| R13 *stream| R14 trie
@@ -488,7 +488,7 @@ trie_pesar:
 	JMP .siguiente
 	
 .pesar:	
-	MOV [R13 + 1], 0
+	MOV byte [R13 + 1], 0
 	MOV RDI, [RBP - 8]
 	CALL [RBP - 24]
 	ADD R12, 1
@@ -502,7 +502,7 @@ trie_pesar:
 	MOVDQA XMM0, [R8]
 	
 	PXOR XMM1, XMM1
-	MOVLPD XMM1, R12 
+	MOVQ XMM1, R12 
 	DIVPD XMM0, XMM1
 	mov rdi, r8
 	CALL free
