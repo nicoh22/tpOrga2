@@ -29,7 +29,6 @@ void trie_agregar_palabra(trie *t, char *p);
 trie *trie_construir(char *nombre_archivo);
 void trie_imprimir(trie *t, char *nombre_archivo);
 
-
 /* Funciones Avanzadas */
 bool buscar_palabra(trie *t, char *p);
 double trie_pesar(trie *t, double (*funcion_pesaje)(char*));

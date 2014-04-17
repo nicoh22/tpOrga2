@@ -8,6 +8,7 @@ global trie_imprimir
 global buscar_palabra
 global palabras_con_prefijo
 global trie_pesar
+global caracteres_tecla
 
 extern malloc
 extern free
@@ -49,8 +50,8 @@ rformat db "r", 0
 append db "a"
 sformat db "%s", 0
 vactrie db "<vacio> ", 0
-endLine db 10, 0
 section .text
+endLine db 10, 0
 
 ; FUNCIONES OBLIGATORIAS. PUEDEN CREAR LAS FUNCIONES AUXILIARES QUE CREAN CONVENIENTES
 trie_crear:
@@ -240,12 +241,17 @@ trie_construir:
 	
 	CALL trie_crear;
 	MOV R14, RAX;
+	
+	
 .ciclo:
 	XOR RSI, RSI;
 	MOV RDI, R13;
 	MOV RSI, sformat;
 	MOV RDX, R12;
 	CALL fscanf;
+	CMP byte [R12], 60
+	JZ .fin
+	
 	CMP EAX, endFile;
 	JZ .fin;
 	
@@ -253,6 +259,7 @@ trie_construir:
 	MOV RSI, R12;
 	CALL trie_agregar_palabra;
 	JMP .ciclo;
+	
 .fin:	
 	MOV RDI, R12; chau buffer
 	CALL free;
@@ -435,11 +442,12 @@ trie_pesar:
 	PUSH R13
 	PUSH R14
 	PUSH R15
-	MOV RBX, [RDI]
-	MOV [RBP - 16], RBX 
-	MOV [RBP - 24], RSI
-
 	
+	MOV RBX, [RDI]
+	;MOV [RBP - 16], RBX 
+	MOV [RBP - 24], RSI
+	CMP RBX, NULL
+	JZ .returncero
 	
 	
 	MOV qword RDI, buffer
@@ -449,17 +457,14 @@ trie_pesar:
 	
 	PUSH NULL
 	PUSH 0
-	CMP RBX, NULL
-	JZ .fin
-	MOV R14, [RBX]
+	MOV R14, RBX
 	XOR RBX, RBX
 	XOR R12, R12	
 	
-	MOV qword RDI, 128
-	CALL malloc
-	MOV [RBP - 16], RAX
-	PXOR XMM0, XMM0
-	MOVDQA [RAX], XMM0
+
+	MOV qword [RBP - 16], NULL
+	
+	
 .siguiente:
 	MOV R15, [R14 + offset_sig]
 	CMP R15, NULL
@@ -479,6 +484,7 @@ trie_pesar:
 	CMP R14, NULL
 	JZ .popear
 	JMP .siguiente
+
 .popear:
 	POP RAX
 	POP R14
@@ -493,25 +499,36 @@ trie_pesar:
 	MOV RDI, [RBP - 8]
 	CALL [RBP - 24]
 	ADD R12, 1
-	MOV R8, [RBP - 16]
-	MOVDQA XMM1, [R8] 
-	ADDPD XMM1, XMM0
-	MOVDQA [R8], XMM1
-	JMP .retoma
-.fin:
-	MOV R8, [RBP - 16]
-	MOVDQA XMM0, [R8]
+	MOVSD xmm1, [RBP - 16]
+	MOV [RBP - 16], RAX
+	ADDSD XMM1, [RBP - 16]
 	
-	PXOR XMM1, XMM1
-	MOVQ XMM1, R12 
-	DIVPD XMM0, XMM1
-	mov rdi, r8
-	CALL free
+	JMP .retoma
+
+.returncero:
+
+	XOR R9, R9 
+	MOVQ XMM1, R9
+	JMP .salir
+.fin:
+	MOVDQA XMM1, [RBP-16] 
+	
+	PXOR XMM2, XMM2
+	MOVQ XMM2, R12 
+	DIVSD XMM1, XMM2
+	
 	
 	mov rdi, [rbp - 8]
 	CALL free
-
-	
+.salir:	
+	POP R15
+	POP R14
+	POP R13
+	POP R12
+	POP RBX
+	ADD RSP, 24
+	POP RBP
+	RET
 palabras_con_prefijo:
 	; listaP* (trie* t, char * prefijo) 
 	PUSH RBP
@@ -540,6 +557,9 @@ palabras_con_prefijo:
 	MOV RBX, RAX
 	MOV [RBP - 8], RBX
 	
+	
+	PUSH NULL
+	SUB RSP, 8
 	;rbx bufferact r12 pref R14 nodo 
 	
 .cargarPrefijo:
@@ -574,7 +594,7 @@ palabras_con_prefijo:
 .nopush:	
 	MOV DL, [R14 + offset_c]
 	MOV [RBX], DL
-	MOV DL, [R14 + offset_c]
+	MOV DL, [R14 + offset_fin]
 	CMP DL, TRUE
 	JNE .noagregar
 	MOV byte [RBX + 1], 0 
@@ -583,6 +603,7 @@ palabras_con_prefijo:
 	CALL lista_agregar
 .noagregar:
 	ADD RCX, 1
+	ADD RBX, 1
 	MOV R14, [R14 + offset_hijos]
 	CMP R14, NULL
 	JNE .ciclo
@@ -597,10 +618,13 @@ palabras_con_prefijo:
 	MOV RDI, [RBP - 8]
 	CALL free
 	MOV RAX, R13
+	
+	
 	POP R14
 	POP R13
 	POP R12
 	POP RBX
+	ADD RSP, 16
 	POP RBP
 	RET
 ;AUX
@@ -636,6 +660,7 @@ convChar:
 .fin: 
 	POP RBP;
 	RET;
+	
 	
 nodo_prefijo: ;*nodo RDI *Char RSI
 	PUSH RBP
