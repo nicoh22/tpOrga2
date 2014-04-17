@@ -4,15 +4,17 @@
 // Completar las funciones en C.
 
 listaP *predecir_palabras(trie *t, char *teclas) { //ignorar esto
-	listaP *res = lista_crear();
-	if (*teclas == 0) return res;
+	listaP *res = crear_lista();
+	if (*teclas == 0 | teclas == 0) then return res;
+	if (t.raiz == 0) then return res;
+	
 	int cantidad = 0;
-	while(*teclas != 0){
-		cantidad =+ 1;
-		teclas++ ; 
+	while(*teclas[cantidad] != 0){
+	cantidad++; 
 	}
-	teclas = teclas - cantidad;
-	char **letras = malloc(sizeof(char*) * cantidad); 	
+	
+	
+	char **letras = malloc(8 * cantidad); 	
 	int *cantletras = malloc(sizeof(int) * cantidad);
 	int j = 0;
 	while(j < cantidad){
@@ -62,24 +64,19 @@ listaP *predecir_palabras(trie *t, char *teclas) { //ignorar esto
 			cantletras[j] = 0;
 			break;
 		}
+		j++;
 	}
- 	int i = 0;
- 	int k = 0;	 
- 	int contar = 0;
- 	char **palabra = malloc(sizeof(char*) *(cantidad * cantidad));
- 	while(i < cantidad){
- 		while (k<cantidad){
- 			palabra[contar] = letras[k];
-			contar = k + i;
- 			k++;
- 		}
- 		i++;
- 	}
-	int h;
-	while (h < contar){	
- 	res = palabras_con_prefijo(t, palabra[h]);
- 	h++;
- 	}
+	
+	listaP *tmp;
+	
+	while(j < cantidad){	
+		while(j < cantLetras[j]){
+		letras[k][j] 
+		
+		tmp = palabras_con_prefijo(t, )
+		res = concatenar(res, tmp)
+		}
+	}
 	free(letras);
 	free(cantletras);
 	free(palabra);

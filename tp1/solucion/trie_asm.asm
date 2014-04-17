@@ -8,7 +8,6 @@ global trie_imprimir
 global buscar_palabra
 global palabras_con_prefijo
 global trie_pesar
-global caracteres_tecla
 
 extern malloc
 extern free
