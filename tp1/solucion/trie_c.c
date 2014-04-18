@@ -4,12 +4,12 @@
 // Completar las funciones en C.
 
 listaP *predecir_palabras(trie *t, char *teclas) { //ignorar esto
-	listaP *res = crear_lista();
-	if (*teclas == 0 | teclas == 0) then return res;
-	if (t.raiz == 0) then return res;
+	listaP *res = lista_crear();
+	if ((*teclas == 0) | (teclas == NULL)) return res;
+	if (((*t).raiz )== NULL) return res;
 	
 	int cantidad = 0;
-	while(*teclas[cantidad] != 0){
+	while((teclas[cantidad]) != 0){
 	cantidad++; 
 	}
 	
@@ -66,22 +66,27 @@ listaP *predecir_palabras(trie *t, char *teclas) { //ignorar esto
 		}
 		j++;
 	}
-	
-	listaP *tmp;
-	
-	while(j < cantidad){	
-		while(j < cantLetras[j]){
-		letras[k][j] 
-		
-		tmp = palabras_con_prefijo(t, )
-		res = concatenar(res, tmp)
+	char *palabra = (char*)malloc(cantidad+1);
+	palabra[cantidad] = 0;
+	listaP *tmp = lista_crear();
+	int k = 0;
+	int i = 0;
+	while(i < cantletras[k]){	
+		while(k < cantidad){
+			palabra[k] = letras[k][i] ;
+			k++;
 		}
+		tmp = palabras_con_prefijo(t, palabra);
+		*res = lista_concatenar(res, tmp);
+		i++;
 	}
 	free(letras);
 	free(cantletras);
 	free(palabra);
 	return res;
 }
+
+
 
 double peso_palabra(char *palabra) {
 	int i = 0;	
