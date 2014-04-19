@@ -69,17 +69,40 @@ listaP *predecir_palabras(trie *t, char *teclas) { //ignorar esto
 	char *palabra = (char*)malloc(cantidad+1);
 	palabra[cantidad] = 0;
 	listaP *tmp = lista_crear();
+/*
 	int k = 0;
 	int i = 0;
-	while(i < cantletras[k]){	
+	int h = 0;
+	while(i < cantletras[k]){
+	
 		while(k < cantidad){
-			palabra[k] = letras[k][i] ;
+			palabra[k] = letras[k][i] ; //recorre los niveles
 			k++;
 		}
 		tmp = palabras_con_prefijo(t, palabra);
-		*res = lista_concatenar(res, tmp);
+		lista_concatenar(res, tmp);
 		i++;
 	}
+*/
+	int k = 0;
+	int i = 0;
+	int h = 0;
+	int l = 0;
+while(k<cantidad){	
+	while(h<cantidad){
+	i = h;
+		while((i < cantLetras[k])&&(k < cantidad)){
+			palabra[k] = letras[k][i];
+			lista_concatenar(tmp, (palabras_con_prefijo(t, palabra)));
+			if((tmp<-primero) == NULL) then i++;
+				else i = 0; k++; 
+			}
+			
+			lista_concatenar(res, tmp);git 	
+		h++;	
+	}
+}
+	
 	free(letras);
 	free(cantletras);
 	free(palabra);

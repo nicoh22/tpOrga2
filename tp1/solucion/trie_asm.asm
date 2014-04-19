@@ -543,6 +543,10 @@ palabras_con_prefijo:
 	
 	CALL lista_crear
 	MOV R13, RAX 
+	
+	CMP R12 NULL
+	JZ .vacio
+	
 	MOV RDI, [RBX]
 	MOV RSI, R12
 	CALL nodo_prefijo
@@ -618,7 +622,7 @@ palabras_con_prefijo:
 	CALL free
 	MOV RAX, R13
 	
-	
+.vacio:	
 	POP R14
 	POP R13
 	POP R12
