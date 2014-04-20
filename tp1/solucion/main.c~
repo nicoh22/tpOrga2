@@ -23,6 +23,9 @@ funct = peso_palabra;
 
 double res = trie_pesar(t, funct);
 
+trie_imprimir(t2, "./test.txt");
+
+
 
 printf("PESO TRIE:  %f \n", res);
 

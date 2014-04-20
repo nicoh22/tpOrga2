@@ -107,7 +107,8 @@ h++;
 				i = 0;
 				k++; 
 			}	
-
+		lista_concatenar(res, tmp);
+		tmp = lista_crear();
 			while((sig[k]==0)&& ciclar){
 			if (k < 0) ciclar = false;			 	
 			k--;
