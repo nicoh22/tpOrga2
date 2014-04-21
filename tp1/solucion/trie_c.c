@@ -67,10 +67,8 @@ listaP *predecir_palabras(trie *t, char *teclas) { //ignorar esto
 		j++;
 	}
 	char *palabra = (char*)malloc(cantidad+1);
-	palabra[cantidad] = 0;
-	listaP *tmp = lista_crear();
 
-
+/*
 	int contar = 1;
 	int k = 0;
 	int i = 0;
@@ -82,21 +80,22 @@ listaP *predecir_palabras(trie *t, char *teclas) { //ignorar esto
 	k = 0;
 	while(h<contar){
 	
+	while(i<cantletras[k]){
 	
-	
-	while(k<cantidad){
-	palabra[k] = letras[k][i];
-	k++;
-	h++;
-	
-	}
+		while(k<cantidad){
+			palabra[k] = letras[k][i];
+			k++;
+			h++;
+		}
 	palabra[k] = 0;
 	lista_concatenar(tmp, palabras_con_prefijo(t, palabra)); 
 	i++;
+	}
+
 	
 	
 	}
-
+*/
 /*
 	int k = 0;
 	int i = 0;
@@ -112,7 +111,8 @@ listaP *predecir_palabras(trie *t, char *teclas) { //ignorar esto
 		i++;
 	}
 */
-/*	int k = 0;
+
+	int k = 0;
 	int i = 0;
 	int h = 0;
 	bool ciclar = true;
@@ -128,7 +128,7 @@ listaP *predecir_palabras(trie *t, char *teclas) { //ignorar esto
 		while((i < cantletras[k])&&(k < cantidad)){
 			palabra[k] = letras[k][i];
 			palabra[k+1] = 0;
-			tmp = (palabras_con_prefijo(t, palabra));
+			listaP *tmp = (palabras_con_prefijo(t, palabra));
 			if((tmp->prim) == NULL) i++;
 			else
 				sig[k] = i + 1;
@@ -143,7 +143,7 @@ listaP *predecir_palabras(trie *t, char *teclas) { //ignorar esto
 			i = sig[k];
 	}
 
-*/
+
 
 
 
@@ -169,3 +169,5 @@ double peso_palabra(char *palabra) {
 	res = (double)i/(double)j;
 	return res;	 
 }
+
+
