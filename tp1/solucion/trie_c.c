@@ -7,7 +7,6 @@ listaP *predecir_palabras(trie *t, char *teclas) { //ignorar esto
 	listaP *res = lista_crear();
 	if ((*teclas == 0) | (teclas == NULL)) return res;
 	if (((*t).raiz )== NULL) return res;
-	
 	int cantidad = 0;
 	while((teclas[cantidad]) != 0){
 	cantidad++; 
@@ -112,43 +111,40 @@ listaP *predecir_palabras(trie *t, char *teclas) { //ignorar esto
 	}
 */
 
-	int k = 0;
+	int k = cantidad - 1;
 	int i = 0;
 	int h = 0;
-	bool ciclar = true;
-	int *sig = malloc(sizeof(int) * cantidad);
+	int *cont = malloc(sizeof(int) * cantidad);
 	
 	while (h<cantidad){
-	sig[h] = 0;
+	cont[h] = 0;
 	h++;
 	}	
 	
-
-	while(ciclar){
-		while((i < cantletras[k])&&(k < cantidad)){
+	while(i<cantletras[k]){
+		
+		
+		
+		while(k>0){
+			i = cont[k];
 			palabra[k] = letras[k][i];
-			palabra[k+1] = 0;
-			listaP *tmp = (palabras_con_prefijo(t, palabra));
-			if((tmp->prim) == NULL) i++;
-			else
-				sig[k] = i + 1;
-				i = 0;
-				k++; 
-			}	
-
-			while((sig[k]==0)&& ciclar){
-			if (k < 0) ciclar = false;			 	
+			cont[k]++;
 			k--;
-			}
-			i = sig[k];
+		}
+		lista_concatenar(res, palabras_con_prefijo(t, palabra));	
+		
+		
+	
 	}
 
+	
 
 
 
 
 
-	free(sig);
+
+	free(cont);
 	free(letras);
 	free(cantletras);
 	free(palabra);
