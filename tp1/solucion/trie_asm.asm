@@ -514,6 +514,8 @@ trie_pesar:
 	
 	PXOR XMM2, XMM2
 	MOVQ XMM2, R12 
+	CVTDQ2PD XMM2, XMM2
+
 	DIVSD XMM1, XMM2
 	
 	
