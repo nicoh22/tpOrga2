@@ -16,16 +16,16 @@ trie_agregar_palabra(t,"gorrion");
 
 listaP *sth = palabras_con_prefijo(t, "au");
 
-
+double sum = peso_palabra("gato") + peso_palabra("auto") + peso_palabra("automata") + peso_palabra("autor") + peso_palabra("gorrion");
 
 double (*funct)(char*);
 funct = peso_palabra;
 
 double res = trie_pesar(t, funct);
-
+double res2 = sum /(double) 5 ;
 
 printf("PESO TRIE:  %f \n", res);
-
+printf("PESO TRIE c:  %f \n", res2);
 
 listaP *s = predecir_palabras(t, "28");
 

@@ -499,15 +499,15 @@ trie_pesar:
 	CALL [RBP - 24]
 	ADD R12, 1
 	MOVSD xmm1, [RBP - 16]
-	MOV [RBP - 16], RAX
-	ADDSD XMM1, [RBP - 16]
-	
+;	MOV [RBP - 16], RAX
+;	ADDSD XMM1, [RBP - 16]
+	ADDSD XMM1, XMM0
+	MOVQ [RBP - 16], XMM1
 	JMP .retoma
 
 .returncero:
 
-	XOR R9, R9 
-	MOVQ XMM1, R9
+	PXOR XMM0, XMM0
 	JMP .salir
 .fin:
 	MOVDQA XMM1, [RBP-16] 
@@ -517,7 +517,7 @@ trie_pesar:
 	CVTDQ2PD XMM2, XMM2
 
 	DIVSD XMM1, XMM2
-	
+	MOVQ XMM0,XMM1
 	
 	mov rdi, [rbp - 8]
 	CALL free
@@ -530,6 +530,7 @@ trie_pesar:
 	ADD RSP, 24
 	POP RBP
 	RET
+	
 palabras_con_prefijo:
 	; listaP* (trie* t, char * prefijo) 
 	PUSH RBP
