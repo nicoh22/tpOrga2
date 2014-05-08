@@ -196,6 +196,7 @@ trie_agregar_palabra:
 	MOV RBX, RDI;
 	MOV R12, RSI;
 	
+	
 .ciclo:
 	MOV SIL, [R12] ; char
 	CMP SIL, NULL;
@@ -606,7 +607,11 @@ palabras_con_prefijo:
 	MOV byte [RBX + 1], 0 
 	MOV RDI, R13
 	MOV RSI, [RBP - 8]
+	PUSH rcx
+	SUB rsp, 8
 	CALL lista_agregar
+	ADD rsp, 8
+	POP rcx
 .noagregar:
 	ADD RCX, 1
 	ADD RBX, 1

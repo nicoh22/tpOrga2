@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "trie.h"
 
 int contar(char *teclas);
@@ -12,6 +13,13 @@ trie_agregar_palabra(t,"automata");
 trie_agregar_palabra(t,"autor");
 trie_agregar_palabra(t,"gorrion");
 
+char *larga= (char*)malloc(1024);
+int i;
+for(i=0;i<1024;i++) {
+	larga[i] = 'a';
+}
+larga[i] = 0;
+trie_agregar_palabra(t,larga);
 
 
 listaP *sth = palabras_con_prefijo(t, "au");
@@ -28,7 +36,7 @@ printf("PESO TRIE:  %f \n", res);
 printf("PESO TRIE c:  %f \n", res2);
 
 listaP *s = predecir_palabras(t, "28");
-
+free(larga);
 lista_borrar(sth);
 lista_borrar(s);
 trie_borrar(t);
