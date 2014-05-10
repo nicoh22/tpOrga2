@@ -39,8 +39,8 @@ printf("PESO TRIE c:  %f \n", res2);
 listaP *s = predecir_palabras(t, "28");
 
 trie_imprimir(t, "./test.txt");
-trie_construir("./test.txt");
-
+trie *t2 = trie_construir("./test.txt");
+trie_imprimir(t2, "./test.txt");
 
 
 
@@ -48,6 +48,7 @@ free(larga);
 lista_borrar(sth);
 lista_borrar(s);
 trie_borrar(t);
+trie_borrar(t2);
     return 0;
 }
 

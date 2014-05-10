@@ -202,7 +202,7 @@ trie_agregar_palabra:
 .ciclo:
 	MOV RAX, R12
 	SUB RAX, R13
-	CMP RAX, 1024
+	CMP RAX, 1023
 	JGE .fin
 	MOV SIL, [R12] ; char
 	CMP SIL, NULL;
@@ -325,7 +325,6 @@ trie_imprimir:
 	
 .noPush: 
 ; R14 bufferAct R13 stream R12 actNodo RBX contador CL char? R15 sig 
-	
 	
 	
 	
@@ -477,7 +476,10 @@ trie_pesar:
 	
 	
 .siguiente:
-	
+	MOV RAX, R13
+	SUB RAX, [RBP - 8]
+	CMP RAX, 1022
+	JGE .pesar	
 	
 	MOV R15, [R14 + offset_sig]
 	CMP R15, NULL
@@ -486,10 +488,7 @@ trie_pesar:
 	PUSH RBX	
 	
 .ciclo:	;[RBP-8] INBUF R13 bufact rbx cont1 r12 cont2 R14 nodo
-	MOV RAX, R13
-	SUB RAX, [RBP - 8]
-	CMP RAX, 1023
-	JGE .pesar
+
 	MOV DL, [R14 + offset_c]
 	MOV [R13], DL
 	MOV AL, [R14 + offset_fin]; 
