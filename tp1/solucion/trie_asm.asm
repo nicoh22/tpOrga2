@@ -513,8 +513,10 @@ trie_pesar:
 	POP R14
 	CMP R14, NULL
 	JZ .fin
-	SUB RBX, RAX
-	SUB R13, RBX
+	MOV RCX, RBX
+	SUB RCX, RAX
+	SUB R13, RCX
+	MOV RBX, RAX
 	JMP .siguiente
 
 
@@ -646,8 +648,10 @@ palabras_con_prefijo:
 	POP R14
 	CMP r14, NULL
 	JZ .end
+	
 	SUB RCX, RAX
 	SUB RBX, RCX
+	MOV RCX, RAX
 	JMP .ciclo
 .end:
 	MOV RDI, [RBP - 8]
@@ -667,7 +671,9 @@ palabras_con_prefijo:
 convChar:
 	PUSH RBP;
 	MOV RBP, RSP;
-	MOV RAX, RDI; 
+	
+	XOR RAX, RAX
+	MOV AL, DIL; 
 	
 	CMP AL, 122;	
 	JG .conv97;
@@ -707,7 +713,9 @@ nodo_prefijo: ;*nodo RDI *Char RSI
 	MOV R12, RSI
 	; RBX nodo act R12 char act
 	MOV CL, [R12]
-
+	CMP RBX, NULL
+	JZ .miss
+	
 .ciclo:
 	CMP [RBX + offset_c], CL
 	JZ .hijos

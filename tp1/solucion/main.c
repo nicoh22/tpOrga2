@@ -23,6 +23,11 @@ trie_agregar_palabra(t,"faspl");
 trie_agregar_palabra(t,"zsjgiojds");
 trie_agregar_palabra(t,"djgojsgs");
 trie_agregar_palabra(t,"mememoforks");
+*/
+trie *t2 = trie_construir("./test.txt");
+trie_imprimir(t2, "./test.txt");
+/*
+
 char *larga= (char*)malloc(1080);
 int i;
 for(i=0;i<1079;i++) {
@@ -37,31 +42,30 @@ printf("larga = %d\n",longit);
 listaP *sth = palabras_con_prefijo(t, "au");
 
 double sum = peso_palabra("gato") + peso_palabra("auto") + peso_palabra("automata") + peso_palabra("autor") + peso_palabra("gorrion") +peso_palabra("autora") + peso_palabra(larga) ;
-
+*/
 double (*funct)(char*);
 funct = peso_palabra;
-
+/*
 double res = trie_pesar(t, funct);
 double res2 = sum /(double) 7 ;
 
 printf("PESO TRIE:  %f \n", res);
 printf("PESO TRIE c:  %f \n", res2);
 
-listaP *s = predecir_palabras(t, "28");
+
+
+
+trie_imprimir(t, "./test.txt");
 */
 
-//trie_imprimir(t, "./test.txt");
-trie *t2 = trie_construir("./test.txt");
-trie_imprimir(t2, "./test.txt");
-double (*funct)(char*);
-funct = peso_palabra;
 
-double res = trie_pesar(t2, funct);
-printf("PESO TRIE:  %f \n", res);
+double res3 = trie_pesar(t2, funct);
+printf("PESO TRIE:  %f \n", res3);
+listaP *s = predecir_palabras(t2, "92");
 
 //free(larga);
 //lista_borrar(sth);
-//lista_borrar(s);
+lista_borrar(s);
 //trie_borrar(t);
 trie_borrar(t2);
     return 0;
