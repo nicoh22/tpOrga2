@@ -244,11 +244,14 @@ trie_construir:
 	LEA RSI, [rformat];
 	CALL fopen;
 	MOV R13, RAX;
-	;RBX *archivo| R12 *buffer| R13 *stream| R14 trie
+	;RBX *archivo| R12 *R| buffer13 *stream| R14 trie
+	
 	
 	CALL trie_crear;
 	MOV R14, RAX;
 	
+	CMP R13, NULL
+	JZ .fin
 	
 .ciclo:
 	XOR RSI, RSI;
@@ -256,11 +259,11 @@ trie_construir:
 	MOV RSI, sformat;
 	MOV RDX, R12;
 	CALL fscanf;
-	CMP byte [R12], 60
-	JZ .fin
-	
+
 	CMP EAX, endFile;
 	JZ .fin;
+	CMP byte [R12], 60
+	JZ .fin
 	
 	MOV RDI, R14;
 	MOV RSI, R12;
@@ -378,6 +381,8 @@ trie_imprimir:
 	LEA RDX, [vactrie];
 	CALL fprintf;
 .fin:
+ 	XOR RAX, RAX;
+	MOV AL, 1;
 	XOR RSI, RSI;
 	XOR RDX, RDX;
 	MOV RDI, R13;
@@ -483,12 +488,8 @@ trie_pesar:
 	
 	
 .ciclo:	;[RBP-8] INBUF R13 bufact rbx cont1 r12 cont2 R14 nodo
-	MOV RAX, R13
-	SUB RAX, [RBP - 8]
-	CMP RAX, 1022
-	JGE .pesar
 
-
+	
 	MOV DL, [R14 + offset_c]
 	MOV [R13], DL
 	MOV AL, [R14 + offset_fin]; 
@@ -501,6 +502,10 @@ trie_pesar:
 	MOV R14, [R14 + offset_hijos]
 	CMP R14, NULL
 	JZ .popear
+	MOV RAX, R13
+	SUB RAX, [RBP - 8]
+	CMP RAX, 1022
+	JGE .popear
 	JMP .siguiente
 
 .popear:
@@ -511,7 +516,8 @@ trie_pesar:
 	SUB RBX, RAX
 	SUB R13, RBX
 	JMP .siguiente
-	
+
+
 .pesar:	
 	MOV byte [R13 + 1], 0
 	MOV RDI, [RBP - 8]
