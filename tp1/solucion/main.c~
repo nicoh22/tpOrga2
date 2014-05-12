@@ -16,12 +16,19 @@ trie_agregar_palabra(t,"autora");
 
 char *larga= (char*)malloc(1024);
 int i;
-for(i=0;i<1020;i++) {
+for(i=0;i<1000;i++) {
 	larga[i] = 'a';
+}
+while(i<1023){
+	larga[i]='b';
+	i++;
+
 }
 larga[i] = 0;
 trie_agregar_palabra(t,larga);
 
+int longit = contar(larga);
+printf("larga = %d",longit);
 
 listaP *sth = palabras_con_prefijo(t, "au");
 

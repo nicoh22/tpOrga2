@@ -212,8 +212,7 @@ trie_agregar_palabra:
 	ADD RAX, offset_hijos;
 	MOV RBX, RAX;
 	ADD R12, 1;
-	JMP .ciclo;
-	
+	JMP .ciclo;	
 .fin:
 	SUB RBX, offset_hijos;
 	MOV byte [RBX + offset_fin], TRUE;
@@ -476,18 +475,19 @@ trie_pesar:
 	
 	
 .siguiente:
-	MOV RAX, R13
-	SUB RAX, [RBP - 8]
-	CMP RAX, 1022
-	JGE .pesar	
-	
 	MOV R15, [R14 + offset_sig]
 	CMP R15, NULL
 	JZ .ciclo
 	PUSH R15
 	PUSH RBX	
 	
+	
 .ciclo:	;[RBP-8] INBUF R13 bufact rbx cont1 r12 cont2 R14 nodo
+	MOV RAX, R13
+	SUB RAX, [RBP - 8]
+	CMP RAX, 1022
+	JGE .pesar
+
 
 	MOV DL, [R14 + offset_c]
 	MOV [R13], DL
