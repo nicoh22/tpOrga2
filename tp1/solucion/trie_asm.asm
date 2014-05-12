@@ -617,7 +617,6 @@ palabras_con_prefijo:
 .hijos:	; R14 nodoinicio R12 *c pref() RBX buf R13 lista R8 sig RCX cont
 	MOV R14, [R14 + offset_hijos]
 	XOR RCX, RCX
-	JMP .nopush
 .ciclo:
 	MOV R8, [R14 + offset_sig]
 	CMP R8, NULL
