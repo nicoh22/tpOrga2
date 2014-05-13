@@ -48,7 +48,7 @@ section .data
 rformat db "r", 0
 append db "a"
 sformat db "%s", 0
-vactrie db "<vacio> ", 0
+vactrie db "<vacio>", 0
 section .text
 endLine db 10, 0
 
@@ -283,6 +283,8 @@ trie_construir:
 	CMP byte [R12+5], 111
 	JNE .noera
 	CMP byte [R12+6], 62
+	JNE .noera
+	CMP byte [R12+7], 0
 	JNE .noera				
 .fin:	
 	MOV RDI, R12; chau buffer
