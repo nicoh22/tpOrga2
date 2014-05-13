@@ -244,7 +244,7 @@ trie_construir:
 	LEA RSI, [rformat];
 	CALL fopen;
 	MOV R13, RAX;
-	;RBX *archivo| R12 *R| buffer13 *stream| R14 trie
+	;RBX *archivo| R12 * buffer|R13 *stream| R14 trie
 	
 	
 	CALL trie_crear;
@@ -263,13 +263,27 @@ trie_construir:
 	CMP EAX, endFile;
 	JZ .fin;
 	CMP byte [R12], 60
-	JZ .fin
-	
+	JZ .seravacio
+
+.noera:	
 	MOV RDI, R14;
 	MOV RSI, R12;
 	CALL trie_agregar_palabra;
 	JMP .ciclo;
 	
+.seravacio:
+	CMP byte [R12+1], 118
+	JNE .noera
+	CMP byte [R12+2], 97
+	JNE .noera
+	CMP byte [R12+3], 99
+	JNE .noera
+	CMP byte [R12+4], 105
+	JNE .noera
+	CMP byte [R12+5], 111
+	JNE .noera
+	CMP byte [R12+6], 62
+	JNE .noera				
 .fin:	
 	MOV RDI, R12; chau buffer
 	CALL free;
