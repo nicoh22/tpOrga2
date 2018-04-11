@@ -1,2 +1,1 @@
-tpOrga2
-=======
+# Organizacion del computador II - tp1- 1c - 2016
